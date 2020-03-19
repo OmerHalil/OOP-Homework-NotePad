@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -35,14 +35,10 @@ namespace NotePad
             InitializeComponent();
         }
 
-        private void panel1_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
         private void LoadNotes(string noteHead)
         {
-            /*Burada Sadece istenen dosyanın ramde tutulması için 
-            sadece istenen dosyayı yükleyen fonksiyo*/
+            /*Burada Ram kullanımının az olması için sadece istenen
+             dosyanın içeriği yüklenir*/
             string note = @"C:\Notes\" + @noteHead + ".note";
             string content = File.ReadAllText(note);
             Notes.Remove(noteHead);
@@ -54,6 +50,7 @@ namespace NotePad
             string[] filesArray = Directory.GetFiles(@"C:\Notes", "*.note");
             foreach (string file in filesArray)
             {
+                //Bu fonksiyonda ise sadece isimler yüklenecektir
                 string[] opr = {@"\"};
                 string[] head = file.Split(opr, System.StringSplitOptions.RemoveEmptyEntries);
                 string header = head[2].Split('.')[0];
@@ -70,6 +67,7 @@ namespace NotePad
 
         private void deleteNote()
         {
+            //Burada tıklanmış olan not silinecektir
             if(USerNotes.Trim() != "")
             {
                 string path = Notepath + USerNotes + ".note";
@@ -84,6 +82,7 @@ namespace NotePad
         }
         private void Form1_Load(object sender, EventArgs e)
         {
+            /*Arayüze yüklendiğinde ayarlamalar*/
             this.request = new Request();
             this.tb_x = textBox1.Location.X;
             this.tb1_y = textBox1.Location.Y;
@@ -100,12 +99,12 @@ namespace NotePad
             LoadNotes();
 
         }
-
-        private void button1_Click(object sender, EventArgs e)
+        //Ekranın kaydırılması için.
+        private void Ekranı_kaydir(object sender, EventArgs e)
         {
             timer1.Start();
         }
-
+        //Ekranın kaydırılması için bit timer.
         private void timer1_Tick(object sender, EventArgs e)
         {
             if (panel1.Width == 45)
@@ -153,7 +152,8 @@ namespace NotePad
             timer1.Stop();
         }
 
-        private void button2_Click(object sender, EventArgs e)
+        //NOtlar kaydetmek veya düzenlemek için
+        private void Kaydet_Duzenle(object sender, EventArgs e)
         {
             if (button2.Text == "kaydet")
             {
@@ -194,6 +194,7 @@ namespace NotePad
                 
             }
         }
+        //Disk'e dosya yazmak için kullanılan method.
         private void writeData(string header, string content)
         {
             FileStream fileStream = new FileStream(Notepath + header+".note", FileMode.Append, FileAccess.Write);
@@ -213,37 +214,45 @@ namespace NotePad
 
         private void listBox1_DoubleClick(object sender, EventArgs e)
         {
-            string key = listBox1.SelectedItem.ToString();
-            if(Notes[key].Trim() == "")
+            try
             {
-                LoadNotes(key);
-                textBox1.Text = key;
-                textBox2.Text = Notes[key];
-                USerNotes = key;
-                button2.Text = "Düzenle";
+                string key = listBox1.SelectedItem.ToString();
+                if (Notes[key].Trim() == "")
+                {
+                    LoadNotes(key);
+                    textBox1.Text = key;
+                    textBox2.Text = Notes[key];
+                    USerNotes = key;
+                    button2.Text = "Düzenle";
+                }
+                else if (USerNotes != key)
+                {
+                    textBox1.Text = key;
+                    textBox2.Text = Notes[key];
+                    USerNotes = key;
+                }
             }
-            else if(USerNotes != key)
+            catch
             {
-                textBox1.Text = key;
-                textBox2.Text = Notes[key];
-                USerNotes = key;
-            }
-            
+
+            }  
         }
 
+        //Uygulama kapanırken Ramde tutulan verilerin silinmesi
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
             Notes.Clear();
         }
-
-        private void button3_Click(object sender, EventArgs e)
+        //Ekrandaki not durumu temizlemek için bir method.
+        private void Temizle(object sender, EventArgs e)
         {
             textBox1.Text = "";
             textBox2.Text = "";
             button2.Text = "Kaydet";
+            USerNotes = "";
         }
 
-        private void button4_Click(object sender, EventArgs e)
+        private void Sil(object sender, EventArgs e)
         {
             deleteNote();
         }
@@ -255,13 +264,20 @@ namespace NotePad
 
         private void dövizToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            string url = "https://api.exchangeratesapi.io/latest";
+            try
+            {
+                string url = "https://api.exchangeratesapi.io/latest";
 
-            string data = this.request.GetRequest(url);
-            
+                string data = this.request.GetRequest(url);
 
-            DovizWin dovizWin = new DovizWin(request.Parserr(data));
-            dovizWin.Show();
+
+                DovizWin dovizWin = new DovizWin(request.Parserr(data));
+                dovizWin.Show();
+            }
+            catch
+            {
+                MessageBox.Show("İnternet Bağlantınız da bir Sorun olabilir...");
+            }
         }
         
         private void menuStrip2_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
