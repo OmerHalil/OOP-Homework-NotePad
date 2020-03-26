@@ -93,7 +93,7 @@
             this.menuStrip1.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(60, 30);
+            this.menuStrip1.Size = new System.Drawing.Size(60, 24);
             this.menuStrip1.TabIndex = 2;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -154,7 +154,7 @@
             this.kaydetCtrlSToolStripMenuItem,
             this.silToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-            this.fileToolStripMenuItem.Size = new System.Drawing.Size(64, 24);
+            this.fileToolStripMenuItem.Size = new System.Drawing.Size(64, 26);
             this.fileToolStripMenuItem.Text = "Dosya";
             this.fileToolStripMenuItem.Click += new System.EventHandler(this.fileToolStripMenuItem_Click);
             // 
@@ -186,7 +186,7 @@
             // dövizToolStripMenuItem
             // 
             this.dövizToolStripMenuItem.Name = "dövizToolStripMenuItem";
-            this.dövizToolStripMenuItem.Size = new System.Drawing.Size(61, 24);
+            this.dövizToolStripMenuItem.Size = new System.Drawing.Size(61, 26);
             this.dövizToolStripMenuItem.Text = "Döviz";
             this.dövizToolStripMenuItem.Click += new System.EventHandler(this.dövizToolStripMenuItem_Click);
             // 

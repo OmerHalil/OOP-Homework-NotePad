@@ -59,7 +59,7 @@ namespace NotePad
                  *olcaktır
                 *//*string content = File.ReadAllText(file);
                 Dict.Add(header, content);*/
-                Dict.Add(header, "");
+                Dict.Add(header.Trim(), "");
                 listBox1.Items.Add(header);
             }
             this.Notes = Dict;
@@ -69,16 +69,17 @@ namespace NotePad
         {
             //Burada tıklanmış olan not silinecektir
             if(USerNotes.Trim() != "")
-            {
+            {  
                 string path = Notepath + USerNotes + ".note";
                 File.Delete(path);
                 listBox1.Items.Remove(USerNotes);
-                Notes.Remove(USerNotes);
                 textBox1.Text = "";
                 textBox2.Text = "";
+                Notes.Remove(USerNotes);
                 USerNotes = "";
+                button2.Text = "kaydet";
             }
-            
+
         }
         private void Form1_Load(object sender, EventArgs e)
         {
@@ -157,8 +158,8 @@ namespace NotePad
         {
             if (button2.Text == "kaydet")
             {
-                string header = textBox1.Text;
-                if (header.Trim() == "")
+                string header = textBox1.Text.Trim();
+                if (header == "")
                 {
                     MessageBox.Show("Başlık yok");
                 }
@@ -171,7 +172,7 @@ namespace NotePad
                     }
                     catch
                     {
-                        string content = textBox2.Text;
+                        string content = textBox2.Text.Trim();
 
                         writeData(header, content);
 
@@ -182,30 +183,49 @@ namespace NotePad
             }
             else if(button2.Text == "Düzenle")
             {
-                if(textBox1.Text == USerNotes && textBox2.Text == Notes[USerNotes])
+                if(textBox1.Text.Trim() == USerNotes && textBox2.Text.Trim() == Notes[USerNotes].Trim())
                 {
+                    MessageBox.Show("AynıNote");
+                }
+                else if (textBox1.Text.Trim() == USerNotes)
+                {
+                    string header = textBox1.Text.Trim();
+                    string contet = textBox2.Text.Trim();
+                    deleteNote();
 
+                    writeData(header, contet);
                 }
                 else
                 {
+                    string header = textBox1.Text.Trim();
+                    string contet = textBox2.Text.Trim();
+                    ///otes.Remove(USerNotes);
+                    
+                    writeData(header, contet);
+
                     deleteNote();
-                    writeData(textBox1.Text, textBox2.Text);
                 }
-                
             }
         }
         //Disk'e dosya yazmak için kullanılan method.
         private void writeData(string header, string content)
         {
-            FileStream fileStream = new FileStream(Notepath + header+".note", FileMode.Append, FileAccess.Write);
-            using (StreamWriter writer = new StreamWriter(fileStream, Encoding.UTF8))
+            try
             {
-                writer.WriteLine(textBox2.Text);
-                writer.Close();
+                FileStream fileStream = new FileStream(Notepath + header + ".note", FileMode.Append, FileAccess.Write);
+                using (StreamWriter writer = new StreamWriter(fileStream, Encoding.UTF8))
+                {
+                    writer.Write(content);
+                    writer.Close();
+                }
+                fileStream.Close();
+                Notes.Add(header,"");
+                listBox1.Items.Add(header);
             }
-            fileStream.Close();
-            Notes.Add(textBox1.Text,"");
-            listBox1.Items.Add(textBox1.Text);
+            catch
+            {
+                MessageBox.Show("hata");
+            }
         }
         private void fileToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -227,9 +247,10 @@ namespace NotePad
                 }
                 else if (USerNotes != key)
                 {
+                    
                     textBox1.Text = key;
                     textBox2.Text = Notes[key];
-                    USerNotes = key;
+                    USerNotes = key.Trim() ;
                 }
             }
             catch
@@ -271,7 +292,7 @@ namespace NotePad
                 string data = this.request.GetRequest(url);
 
 
-                DovizWin dovizWin = new DovizWin(request.Parserr(data));
+                DovizWin dovizWin = new DovizWin(request.Parser(data));
                 dovizWin.Show();
             }
             catch
@@ -283,6 +304,14 @@ namespace NotePad
         private void menuStrip2_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
         {
 
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            foreach (string val in Notes.Keys)
+            {
+                MessageBox.Show(val);
+            }
         }
     }
   
